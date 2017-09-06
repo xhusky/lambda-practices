@@ -76,9 +76,9 @@ double --> | DoubleToIntFunction | --> int
            +---------------------+
 ```
 ``` 
-           +---------------------+
-double --> | DoubleToIntFunction | --> long
-           +---------------------+
+           +----------------------+
+double --> | DoubleToLongFunction | --> long
+           +----------------------+
 ```
 ```
            +---------------------+
