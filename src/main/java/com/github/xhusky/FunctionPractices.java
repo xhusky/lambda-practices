@@ -49,8 +49,6 @@ public class FunctionPractices {
         Supplier<String> whoAreYou = () -> "I'm TR";
         System.out.println(whoAreYou.get());
 
-        ThreadLocal<Integer> pages = ThreadLocal.withInitial(() -> 100);
-
         /**
          *       +----------+
          * T --> | Consumer | -X->
