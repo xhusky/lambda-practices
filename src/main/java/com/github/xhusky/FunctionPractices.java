@@ -156,9 +156,9 @@ public class FunctionPractices {
         System.out.println(roundToInt.applyAsInt(15.3D));
 
         /**
-         *            +---------------------+
-         * double --> | DoubleToIntFunction | --> long
-         *            +---------------------+
+         *            +----------------------+
+         * double --> | DoubleToLongFunction | --> long
+         *            +----------------------+
          */
         DoubleToLongFunction roundToLong = x -> (long) Math.round(x);
         System.out.println(roundToLong.applyAsLong(15.3D));
@@ -180,9 +180,9 @@ public class FunctionPractices {
         sayPrice.accept("Price is", 12.5D);
 
         /**
-         *           +-------------------+
+         *           +--------------------+
          * (T,U) --> | ToDoubleBiFunction | --> double
-         *           +-------------------+
+         *           +--------------------+
          */
         ToDoubleBiFunction<Integer, Long> toDouble = (x, y) -> x + y;
         System.out.println(toDouble.applyAsDouble(10, 200L));

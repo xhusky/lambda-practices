@@ -96,6 +96,5 @@ public class StreamPractices {
                     System.out.format("combiner: sum1=%s; sum2=%s\n", sum1, sum2);
                     return sum1 + sum2;
                 });
-
     }
 }
