@@ -1,5 +1,5 @@
 # lambda-practices
-                                             |
+
 ```                                          |
       +----------+                           |       +----------+        
 T --> | Function | --> R                     | -X->  | Supplier | --> T  
