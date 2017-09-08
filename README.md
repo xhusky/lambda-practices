@@ -351,10 +351,6 @@ Stream.of(1, 2, 3, 4)
                 BiFunction<U, ? super T, U> accumulator,
                 BinaryOperator<U> combiner);`**
 
-**`<R> R collect(Supplier<R> supplier,
-                BiConsumer<R, ? super T> accumulator,
-                BiConsumer<R, R> combiner);`**
-
 *`parallelStream` 的时候 `combiner` 参数才有效。*
 
 ```java
@@ -369,6 +365,11 @@ Arrays.asList(1, 2, 3, 4, 5, 6).parallelStream()
                     return sum1 + sum2;
                 });
 ```
+
+**`<R> R collect(Supplier<R> supplier,
+                BiConsumer<R, ? super T> accumulator,
+                BiConsumer<R, R> combiner);`**
+                
 **`<R, A> R collect(Collector<? super T, A, R> collector);`**
 
 **`Optional<T> min(Comparator<? super T> comparator);`**
