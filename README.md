@@ -513,10 +513,45 @@ Stream<Integer>               long
 
 **`boolean anyMatch(Predicate<? super T> predicate);`**
 
+*流中存在元素匹配，即为`true`*
+
+```java
+Stream.of("one", "two", "three", "four", "five")
+            .anyMatch(str -> str.contains("tw"));
+```
+
 **`boolean allMatch(Predicate<? super T> predicate);`**
+
+*流中全部元素匹配，才为`true`*
+
+```java
+Stream.of("one", "two", "four")
+            .allMatch(str -> str.contains("o"));
+```
 
 **`boolean noneMatch(Predicate<? super T> predicate);`**
 
+*流中全部元素均不匹配，才为`true`*
+
+```java
+Stream.of("one", "two", "three", "four", "five")
+            .noneMatch(str -> str.contains("six"));
+```
+
 **`Optional<T> findFirst();`**
 
+*返回第一个元素*
+
+```java
+Stream.of("one", "two", "three", "four", "five")
+            .findFirst().ifPresent(System.out::println);
+```
+
 **`Optional<T> findAny();`**
+
+*`并行化`时随机选择一个元素返回，非并行化和`findFirst`类似*
+```java
+Stream.of("one", "two", "three", "four", "five", "six")
+            .parallel()
+            .findAny().ifPresent(System.out::println);
+```
