@@ -410,6 +410,8 @@ Stream<String>                  String[]
 
 **`<A> A[] toArray(IntFunction<A[]> generator);`**
 
+*建议采用该方法*
+
 ```
 Stream.of("one", "two", "three", "four", "five")
             .toArray(String[]::new);
@@ -452,8 +454,45 @@ Arrays.asList(1, 2, 3, 4, 5, 6).parallelStream()
 **`<R> R collect(Supplier<R> supplier,
                 BiConsumer<R, ? super T> accumulator,
                 BiConsumer<R, R> combiner);`**
-                
+
+*`supplier`创造目标类型实例， `accumulator` 将当元素添加到目标中， `combiner` 将中间状态的多个结果整合到一起*
+*`并行化` 的时候 `combiner` 参数才有效。*
+
+```java
+Stream.of("one", "two", "three", "four", "five")
+            .parallel()
+            .collect(
+                () -> new ArrayList<>(),
+                (list, item) -> list.add(item),
+                (one, two) -> one.addAll(two)
+            ).forEach(System.out::println);
+```
 **`<R, A> R collect(Collector<? super T, A, R> collector);`**
+
+*流转换为其它数据结构， 具体参考`Collector`，`Collectors`*
+
+```java
+Stream.of("one", "two", "three", "four", "five")
+            .collect(Collectors.toList());
+
+Stream.of("one", "two", "three", "four", "five")
+            .collect(Collectors.toSet());
+```
+
+```
+Stream<String>                 List<String>
+  +-------+                     +-------+   
+  | one   |                     | five  |   
+  +-------+                     +-------+   
+  | two   |                     | four  |   
+  +-------+                     +-------+   
+  | three |      collect()      | one   |   
+  +-------+  --------------->   +-------+   
+  | four  | Collectors.toList() | three |   
+  +-------+                     +-------+   
+  | five  |                     | two   |   
+  +-------+                     +-------+   
+```
 
 **`Optional<T> min(Comparator<? super T> comparator);`**
 
@@ -549,7 +588,7 @@ Stream.of("one", "two", "three", "four", "five")
 
 **`Optional<T> findAny();`**
 
-*`并行化`时随机选择一个元素返回，非并行化和`findFirst`类似*
+*`并行化`时“随机”选择一个元素返回，非并行化和`findFirst`类似*
 ```java
 Stream.of("one", "two", "three", "four", "five", "six")
             .parallel()
