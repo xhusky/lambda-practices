@@ -1,11 +1,9 @@
 package com.github.xhusky;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -15,69 +13,70 @@ import java.util.stream.Stream;
  */
 public class StreamPractices {
 
-    private static List<String> strings = new ArrayList<>();
-    private static List<String> numStrings = new ArrayList<>();
-    private static List<Integer> integers = new ArrayList<>();
-    static {
-        strings.add("one");
-        strings.add("two");
-        strings.add("three");
-        strings.add("four");
-        strings.add("five");
-
-        numStrings.add("100");
-        numStrings.add("200");
-        numStrings.add("300");
-        numStrings.add("400");
-        numStrings.add("500");
-        numStrings.add("500");
-
-
-        for (int i = 0; i < 10; i++) {
-            integers.add(i);
-        }
-    }
-
     public static void main(String[] args) {
 
-        Stream<String> filterStream = strings.stream()
+        Stream.of("one", "two", "three", "four", "five")
             .filter(str -> str.length() > 3);
 
-        Stream<String> mapStream = strings.stream()
+        Stream.of("one", "two", "three", "four", "five")
             .map(String::toUpperCase);
 
-        IntStream mapToIntStream = numStrings.stream()
+        Stream.of("1", "2", "3", "4", "5")
             .mapToInt(Integer::valueOf);
 
-        Stream<String> flatMapStream = Stream.of(numStrings, strings)
-            .flatMap(Collection::stream);
+        Stream.of("1", "2", "3", "4", "5")
+            .mapToLong(Long::valueOf);
 
-        Stream<String> distinctStream = Stream.of("1", "1", "0")
-            .distinct(); // [1, 0]
+        Stream.of("1.1", "2.2", "3.3", "4.4", "5.5")
+            .mapToDouble(Double::valueOf).forEach(System.out::println);
 
-        Stream<Integer> sortedStream1 = Stream.of(10, 120, 8)
-            .sorted();
+        Stream.of(Arrays.asList("one", "two"), Arrays.asList("three", "four", "five"))
+            .flatMap(list -> list.stream());
 
-        Stream<Integer> sortedStream2 = Stream.of(10, 120, 8)
-            .sorted(Comparator.naturalOrder());
+        Stream.of("one", "two", "three", "four", "five")
+            .forEach(str -> {
+                System.out.println(str.toUpperCase());
+            });
 
+        Stream.of("one", "two", "three", "four", "four")
+            .distinct();
 
-        // peek
-        Stream.of("one", "two", "three", "four")
-            .filter(e -> e.length() > 3)
-            .peek(e -> System.out.println("Filtered value: " + e))
-            .map(String::toUpperCase)
-            .peek(e -> System.out.println("Mapped value: " + e))
-            .collect(Collectors.toList());
+        Stream.of("one", "two", "three", "four", "five")
+            .sorted()
+            .peek(e -> System.out.println("Peek value: " + e))
+            .sorted(Comparator.reverseOrder())
+            .peek(e -> System.out.println("Peek value: " + e))
+            .count();
 
+        Stream.of("one", "two", "three", "four", "five")
+            .forEachOrdered(str -> {
+                System.out.println(str.toUpperCase());
+            });
 
-        // limit
-        Stream.of("one", "two", "three", "four")
-            .limit(2)
+        Stream.of("one", "two", "three", "four", "five")
+            .parallel()
+            .forEach(System.out::println);
+
+        Stream.of("one", "two", "three", "four", "five")
+            .parallel()
+            .forEachOrdered(System.out::println);
+
+        Stream.of("one", "two", "three", "four", "five")
+            .collect(Collectors.toSet());
+
+        Stream.of("one", "two", "three", "four", "five")
+            .parallel()
+            .collect(
+                () -> new ArrayList<>(),
+                (list, item) -> list.add(item),
+                (one, two) -> one.addAll(two)
+            ).forEach(System.out::println);
+
+        Stream.of("one", "two", "three", "four", "five")
+            .skip(2)
             .peek(e -> System.out.println("After limit value: " + e))
             .collect(Collectors.toList());
 
-        // reduce
         Stream.of(1, 2, 3, 4)
             .reduce(0, (acc, element) -> acc + element);
 
@@ -86,7 +85,7 @@ public class StreamPractices {
             .ifPresent(System.out::println);
 
         // 并行时（parallelStream）才会启用第三个参数
-        integers.parallelStream()
+        Arrays.asList(1, 2, 3, 4, 5, 6).parallelStream()
             .reduce(0,
                 (sum, p) -> {
                     System.out.format("accumulator: sum=%s; person=%s\n", sum, p);
@@ -96,5 +95,73 @@ public class StreamPractices {
                     System.out.format("combiner: sum1=%s; sum2=%s\n", sum1, sum2);
                     return sum1 + sum2;
                 });
+
+        Stream.of(1, 2, 3, 4)
+            .min(Comparator.naturalOrder());
+
+        System.out.println(Stream.of(1, 2, 3, 4)
+            .count());
+        ;
+
+        Stream.of("one", "two", "three", "four", "five")
+            .toArray();
+
+        Stream.of("one", "two", "three", "four", "five")
+            .toArray(String[]::new);
+
+        Stream.of("one", "two", "three", "four", "five")
+            .toArray(size -> new String[size]);
+
+        Stream.of("one", "two", "three", "four", "five")
+            .anyMatch(str -> str.contains("tw"));
+
+        Stream.of("one", "two", "four")
+            .allMatch(str -> str.contains("o"));
+
+        Stream.of("one", "two", "three", "four", "five")
+            .noneMatch(str -> str.contains("six"));
+
+        Stream.of("one", "two", "three", "four", "five")
+            .findFirst().ifPresent(System.out::println);
+
+        Stream.of("one", "two", "three", "four", "five", "six")
+            .parallel()
+            .findAny().ifPresent(System.out::println);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
