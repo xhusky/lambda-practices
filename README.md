@@ -270,9 +270,55 @@ Stream<String>                Stream<String>
 
 **`Stream<T> sorted();`**
 
+*默认自然顺序等价于`sorted(Comparator.naturalOrder())`* 
+
+```java
+Stream.of("one", "two", "three", "four", "five")
+            .sorted();
+```
+```
+Stream<String>                Stream<String>
+  +-------+                     +-------+   
+  | one   |                     | five  |   
+  +-------+                     +-------+   
+  | two   |                     | four  |   
+  +-------+                     +-------+   
+  | three |       sorted()      | one   |   
+  +-------+  --------------->   +-------+   
+  | four  |                     | three |   
+  +-------+                     +-------+   
+  | five  |                     | two   |   
+  +-------+                     +-------+   
+```
+
 **`Stream<T> sorted(Comparator<? super T> comparator);`**
 
+```java
+Stream.of("one", "two", "three", "four", "five")
+            .sorted(Comparator.naturalOrder());
+```
+```
+Stream<String>                Stream<String>
+  +-------+                     +-------+   
+  | one   |                     | five  |   
+  +-------+                     +-------+   
+  | two   |                     | four  |   
+  +-------+                     +-------+   
+  | three |       sorted()      | one   |   
+  +-------+  --------------->   +-------+   
+  | four  |     naturalOrder    | three |   
+  +-------+                     +-------+   
+  | five  |                     | two   |   
+  +-------+                     +-------+   
+```
+
 **`Stream<T> peek(Consumer<? super T> action);`**
+
+```java
+       Stream.of("one", "two", "three", "four", "five")
+            .peek(e -> System.out.println("Peek value: " + e))
+            .count();
+```
 
 **`Stream<T> limit(long maxSize);`**
 
@@ -328,9 +374,46 @@ Stream.of("one", "two", "three", "four", "five")
 
 **`void forEachOrdered(Consumer<? super T> action);`**
 
+*非并行化情况下等价于`forEach`，并行化情况下`forEachOrdered`始终保持顺序， 但`forEach`不是*
+
+```java
+Stream.of("one", "two", "three", "four", "five")
+            .parallel()
+            .forEach(System.out::println);
+
+Stream.of("one", "two", "three", "four", "five")
+            .parallel()
+            .forEachOrdered(System.out::println);
+```
+
 **`Object[] toArray();`**
 
+```java
+Stream.of("one", "two", "three", "four", "five")
+            .toArray();
+```
+
+```
+Stream<String>                  String[] 
+  +-------+                     +-------+   
+  | one   |                     | five  |   
+  +-------+                     +-------+   
+  | two   |                     | four  |   
+  +-------+                     +-------+   
+  | three |      toArray()      | one   |   
+  +-------+  --------------->   +-------+   
+  | four  |                     | three |   
+  +-------+                     +-------+   
+  | five  |                     | two   |   
+  +-------+                     +-------+   
+```
+
 **`<A> A[] toArray(IntFunction<A[]> generator);`**
+
+```
+Stream.of("one", "two", "three", "four", "five")
+            .toArray(String[]::new);
+```
 
 **`T reduce(T identity, BinaryOperator<T> accumulator);`**
 
@@ -351,7 +434,7 @@ Stream.of(1, 2, 3, 4)
                 BiFunction<U, ? super T, U> accumulator,
                 BinaryOperator<U> combiner);`**
 
-*`parallelStream` 的时候 `combiner` 参数才有效。*
+*`并行化` 的时候 `combiner` 参数才有效。*
 
 ```java
 Arrays.asList(1, 2, 3, 4, 5, 6).parallelStream()
