@@ -1,6 +1,6 @@
 # lambda-practices
 
-**函数接口**
+### 函数接口
 
 ```
       +----------+
@@ -102,8 +102,7 @@ double --> | DoubleUnaryOperator | --> double
 T --> | UnaryOperator | --> T
       +---------------+
 ```
-
-**Stream API**
+### Stream
 
 **Stream分为中间操作（Intermediate operations）和终止操作（Terminal operations）**
 
@@ -115,7 +114,16 @@ T --> | UnaryOperator | --> T
 - 对于一个 intermediate 操作，如果它接受的是一个无限大（infinite/unbounded）的 Stream，但返回一个有限的新 Stream。
 - 对于一个 terminal 操作，如果它接受的是一个无限大的 Stream，但能在有限的时间计算出结果。
 - 常见操作有 anyMatch、 allMatch、 noneMatch、 findFirst、 findAny、 limit
- 
+
+以下摘自 [这里](https://github.com/CarpenterLee/JavaLambdaInternals/blob/master/6-Stream%20Pipelines.md)
+
+<table width="600"><tr><td colspan="3" align="center"  border="0">Stream操作分类</td></tr><tr><td rowspan="2"  border="1">中间操作(Intermediate operations)</td><td>无状态(Stateless)</td><td>unordered() filter() map() mapToInt() mapToLong() mapToDouble() flatMap() flatMapToInt() flatMapToLong() flatMapToDouble() peek()</td></tr><tr><td>有状态(Stateful)</td><td>distinct() sorted() sorted() limit() skip() </td></tr><tr><td rowspan="2"  border="1">结束操作(Terminal operations)</td><td>非短路操作</td><td>forEach() forEachOrdered() toArray() reduce() collect() max() min() count()</td></tr><tr><td>短路操作(short-circuiting)</td><td>anyMatch() allMatch() noneMatch() findFirst() findAny()</td></tr></table>
+
+Stream上的所有操作分为两类：中间操作和结束操作，中间操作只是一种标记，只有结束操作才会触发实际计算。中间操作又可以分为无状态的(Stateless)和有状态的(Stateful)，无状态中间操作是指元素的处理不受前面元素的影响，而有状态的中间操作必须等到所有元素处理之后才知道最终结果，比如排序是有状态操作，在读取所有元素之前并不能确定排序结果；结束操作又可以分为短路操作和非短路操作，短路操作是指不用处理全部元素就可以返回结果，比如找到第一个满足条件的元素。之所以要进行如此精细的划分，是因为底层对每一种情况的处理方式不同。
+
+
+**Stream API**
+
 **`Stream<T> filter(Predicate<? super T> predicate);`**
 
 ```java
